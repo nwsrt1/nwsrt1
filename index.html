@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로또 번호 추첨기</title>
+    <style>
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 2rem;
+        }
+
+        #ball-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 2rem;
+            min-height: 60px;
+        }
+
+        .ball {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: bounce 0.5s ease-out;
+        }
+
+        @keyframes bounce {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* 로또 번호별 색상 (한국 로또 기준) */
+        .color-yellow { background-color: #fbc400; } /* 1-10 */
+        .color-blue   { background-color: #69c8f2; } /* 11-20 */
+        .color-red    { background-color: #ff7272; } /* 21-30 */
+        .color-gray   { background-color: #aaaaaa; } /* 31-40 */
+        .color-green  { background-color: #b0d840; } /* 41-45 */
+
+        button {
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>로또 번호 추첨기</h1>
+
+    <div id="ball-container">
+        <!-- 번호가 여기에 생성됩니다 -->
+    </div>
+
+    <button onclick="generateLotto()">번호 추첨하기</button>
+
+    <script>
+        function getBallColorClass(num) {
+            if (num <= 10) return 'color-yellow';
+            if (num <= 20) return 'color-blue';
+            if (num <= 30) return 'color-red';
+            if (num <= 40) return 'color-gray';
+            return 'color-green';
+        }
+
+        function generateLotto() {
+            const container = document.getElementById('ball-container');
+            container.innerHTML = ''; // 기존 번호 초기화
+
+            const numbers = new Set();
+            while (numbers.size < 6) {
+                const randomNum = Math.floor(Math.random() * 45) + 1;
+                numbers.add(randomNum);
+            }
+
+            // 오름차순 정렬
+            const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
+
+            sortedNumbers.forEach((num, index) => {
+                // 순차적으로 나타나는 효과를 위해 setTimeout 사용
+                setTimeout(() => {
+                    const ball = document.createElement('div');
+                    ball.className = `ball ${getBallColorClass(num)}`;
+                    ball.textContent = num;
+                    container.appendChild(ball);
+                }, index * 100);
+            });
+        }
+        
+        // 페이지 로드 시 바로 한 번 실행
+        window.onload = generateLotto;
+    </script>
+</body>
+</html>
