@@ -3,24 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>로또 추첨기</title>
+    <title>로또 추첨기 (5게임)</title>
     <style>
         :root { --bg: #f8f9fa; --txt: #333; --btn: #007bff; }
         [data-theme="dark"] { --bg: #1e1e1e; --txt: #eee; --btn: #375a7f; }
-        body { font-family: system-ui; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; background: var(--bg); color: var(--txt); transition: .3s; }
+        body { font-family: system-ui; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background: var(--bg); color: var(--txt); transition: .3s; padding: 2rem 0; }
         .theme-toggle { position: fixed; top: 1rem; right: 1rem; cursor: pointer; padding: .5rem 1rem; border-radius: 20px; border: 1px solid; background: none; color: inherit; }
-        #balls { display: flex; gap: 10px; margin: 2rem 0; flex-wrap: wrap; justify-content: center; }
-        .ball { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; animation: pop .3s ease-out forwards; box-shadow: 0 3px 6px rgba(0,0,0,.2); }
+        .game-row { display: flex; gap: 10px; margin: 1rem 0; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
+        .game-label { font-weight: bold; width: 60px; }
+        .ball { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; animation: pop .3s ease-out forwards; box-shadow: 0 3px 6px rgba(0,0,0,.2); font-size: 0.9rem; }
         @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
         .c1 { background: #fbc400; } .c2 { background: #69c8f2; } .c3 { background: #ff7272; } .c4 { background: #aaa; } .c5 { background: #b0d840; }
-        button.main { padding: 10px 25px; font-size: 1.1rem; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+        button.main { padding: 12px 30px; font-size: 1.1rem; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem; position: sticky; bottom: 2rem; }
     </style>
 </head>
 <body>
     <button class="theme-toggle" onclick="t()">🌙 다크 모드</button>
-    <h1>로또 추첨기</h1>
-    <div id="balls"></div>
-    <button class="main" onclick="g()">추첨하기</button>
+    <h1>로또 5게임 추첨기</h1>
+    <div id="container"></div>
+    <button class="main" onclick="g()">5게임 추첨하기</button>
 
     <script>
         const $ = d => document.getElementById(d), h = document.documentElement;
@@ -30,16 +31,22 @@
             document.querySelector('.theme-toggle').textContent = isD ? '🌙 다크 모드' : '☀️ 라이트 모드';
         };
         const g = () => {
-            const b = $('balls'); b.innerHTML = '';
-            const nums = new Set(); while(nums.size < 6) nums.add(Math.floor(Math.random() * 45) + 1);
-            [...nums].sort((x, y) => x - y).forEach((n, i) => {
-                setTimeout(() => {
-                    const el = document.createElement('div');
-                    el.className = `ball c${Math.ceil(n/10)}`;
-                    el.textContent = n;
-                    b.appendChild(el);
-                }, i * 100);
-            });
+            const c = $('container'); c.innerHTML = '';
+            for (let i = 1; i <= 5; i++) {
+                const row = document.createElement('div');
+                row.className = 'game-row';
+                row.innerHTML = `<span class="game-label">게임 ${i}</span>`;
+                const nums = new Set(); while(nums.size < 6) nums.add(Math.floor(Math.random() * 45) + 1);
+                [...nums].sort((x, y) => x - y).forEach((n, j) => {
+                    setTimeout(() => {
+                        const el = document.createElement('div');
+                        el.className = `ball c${Math.ceil(n/10)}`;
+                        el.textContent = n;
+                        row.appendChild(el);
+                    }, (i * 100) + (j * 50));
+                });
+                c.appendChild(row);
+            }
         };
         g();
     </script>
