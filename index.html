@@ -11,8 +11,8 @@
         .theme-toggle { position: fixed; top: 1rem; right: 1rem; cursor: pointer; padding: .5rem 1rem; border-radius: 20px; border: 1px solid; background: none; color: inherit; }
         .game-row { display: flex; gap: 10px; margin: 1rem 0; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
         .game-label { font-weight: bold; width: 60px; }
-        .ball { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; animation: pop .3s ease-out forwards; box-shadow: 0 3px 6px rgba(0,0,0,.2); font-size: 0.9rem; }
-        @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+        .ball { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; animation: pop .2s ease-out; box-shadow: 0 3px 6px rgba(0,0,0,.2); font-size: 0.9rem; }
+        @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .c1 { background: #fbc400; } .c2 { background: #69c8f2; } .c3 { background: #ff7272; } .c4 { background: #aaa; } .c5 { background: #b0d840; }
         button.main { padding: 12px 30px; font-size: 1.1rem; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem; position: sticky; bottom: 2rem; }
     </style>
@@ -37,13 +37,11 @@
                 row.className = 'game-row';
                 row.innerHTML = `<span class="game-label">게임 ${i}</span>`;
                 const nums = new Set(); while(nums.size < 6) nums.add(Math.floor(Math.random() * 45) + 1);
-                [...nums].sort((x, y) => x - y).forEach((n, j) => {
-                    setTimeout(() => {
-                        const el = document.createElement('div');
-                        el.className = `ball c${Math.ceil(n/10)}`;
-                        el.textContent = n;
-                        row.appendChild(el);
-                    }, (i * 100) + (j * 50));
+                [...nums].sort((x, y) => x - y).forEach(n => {
+                    const el = document.createElement('div');
+                    el.className = `ball c${Math.ceil(n/10)}`;
+                    el.textContent = n;
+                    row.appendChild(el);
                 });
                 c.appendChild(row);
             }
