@@ -5,16 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로또 추첨기 (5게임)</title>
     <style>
-        :root { --bg: #f8f9fa; --txt: #333; --btn: #007bff; }
-        [data-theme="dark"] { --bg: #1e1e1e; --txt: #eee; --btn: #375a7f; }
+        :root { --bg: #f8f9fa; --txt: #333; --btn: #007bff; --input-bg: #fff; --input-border: #ddd; }
+        [data-theme="dark"] { --bg: #1e1e1e; --txt: #eee; --btn: #375a7f; --input-bg: #2d2d2d; --input-border: #444; }
         body { font-family: system-ui; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; background: var(--bg); color: var(--txt); transition: .3s; padding: 2rem 0; }
-        .theme-toggle { position: fixed; top: 1rem; right: 1rem; cursor: pointer; padding: .5rem 1rem; border-radius: 20px; border: 1px solid; background: none; color: inherit; }
-        .game-row { display: flex; gap: 10px; margin: 1rem 0; align-items: center; padding: 10px; border-bottom: 1px solid #ddd; }
+        .theme-toggle { position: fixed; top: 1rem; right: 1rem; cursor: pointer; padding: .5rem 1rem; border-radius: 20px; border: 1px solid; background: none; color: inherit; z-index: 10; }
+        .game-row { display: flex; gap: 10px; margin: 1rem 0; align-items: center; padding: 10px; border-bottom: 1px solid var(--input-border); }
         .game-label { font-weight: bold; width: 60px; }
         .ball { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: #fff; animation: pop .2s ease-out; box-shadow: 0 3px 6px rgba(0,0,0,.2); font-size: 0.9rem; }
         @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .c1 { background: #fbc400; } .c2 { background: #69c8f2; } .c3 { background: #ff7272; } .c4 { background: #aaa; } .c5 { background: #b0d840; }
-        button.main { padding: 12px 30px; font-size: 1.1rem; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; margin-top: 1rem; position: sticky; bottom: 2rem; }
+        button.main { padding: 12px 30px; font-size: 1.1rem; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; margin: 1rem 0 3rem; }
+        
+        /* 제휴 문의 폼 스타일 */
+        .contact-section { width: 90%; max-width: 400px; padding: 2rem; background: var(--input-bg); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--input-border); margin-top: 2rem; }
+        .contact-section h2 { margin-top: 0; font-size: 1.2rem; text-align: center; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; margin-bottom: .5rem; font-size: 0.9rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--input-border); border-radius: 5px; background: var(--bg); color: var(--txt); box-sizing: border-box; }
+        .form-group textarea { height: 100px; resize: none; }
+        .submit-btn { width: 100%; padding: 10px; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -22,6 +31,26 @@
     <h1>로또 5게임 추첨기</h1>
     <div id="container"></div>
     <button class="main" onclick="g()">5게임 추첨하기</button>
+
+    <!-- 제휴 문의 섹션 -->
+    <div class="contact-section">
+        <h2>🤝 제휴 문의</h2>
+        <form action="https://formspree.io/f/mrevogon" method="POST">
+            <div class="form-group">
+                <label>이름</label>
+                <input type="text" name="name" placeholder="성함 또는 업체명" required>
+            </div>
+            <div class="form-group">
+                <label>이메일</label>
+                <input type="email" name="_replyto" placeholder="example@email.com" required>
+            </div>
+            <div class="form-group">
+                <label>문의 내용</label>
+                <textarea name="message" placeholder="문의 내용을 입력해 주세요" required></textarea>
+            </div>
+            <button type="submit" class="submit-btn">문의 보내기</button>
+        </form>
+    </div>
 
     <script>
         const $ = d => document.getElementById(d), h = document.documentElement;
