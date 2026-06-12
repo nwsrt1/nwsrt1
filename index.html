@@ -43,7 +43,7 @@
     <!-- 댓글 섹션 -->
     <div class="comment-section">
         <h2>💬 댓글 서비스</h2>
-        <div id="utterances-container"></div>
+        <div id="disqus_thread"></div>
     </div>
 
     <script>
@@ -54,10 +54,9 @@
             h.setAttribute('data-theme', newTheme);
             document.querySelector('.theme-toggle').textContent = isD ? '🌙 다크 모드' : '☀️ 라이트 모드';
             
-            // Utterances 테마 업데이트
-            const frame = document.querySelector('.utterances-frame');
-            if (frame) {
-                frame.contentWindow.postMessage({ type: 'set-theme', theme: isD ? 'github-light' : 'github-dark' }, 'https://utteranc.es');
+            // Disqus 테마 업데이트 (새로고침 없이 테마 변경은 Disqus 공식 지원 범위 밖이나 페이지 리로드를 유도하거나 새로고침 시 적용됨)
+            if (typeof DISQUS !== 'undefined') {
+                DISQUS.reset({ reload: true });
             }
         };
 
@@ -77,20 +76,20 @@
             }
         };
 
-        // Utterances 로드
-        const loadComments = () => {
-            const script = document.createElement('script');
-            script.src = 'https://utteranc.es/client.js';
-            script.setAttribute('repo', 'nwsrt1/nwsrt1');
-            script.setAttribute('issue-term', 'pathname');
-            script.setAttribute('theme', h.getAttribute('data-theme') === 'dark' ? 'github-dark' : 'github-light');
-            script.setAttribute('crossorigin', 'anonymous');
-            script.async = true;
-            $('utterances-container').appendChild(script);
+        // Disqus 로드
+        var disqus_config = function () {
+            this.page.url = window.location.href;
+            this.page.identifier = window.location.pathname;
         };
+        (function() {
+            var d = document, s = d.createElement('script');
+            s.src = 'https://nwsrt1-lotto.disqus.com/embed.js'; // 임시 숏네임 설정
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();
 
         g();
-        loadComments();
     </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </body>
 </html>
