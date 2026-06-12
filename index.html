@@ -15,14 +15,12 @@
         @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .c1 { background: #fbc400; } .c2 { background: #69c8f2; } .c3 { background: #ff7272; } .c4 { background: #aaa; } .c5 { background: #b0d840; }
         button.main { padding: 12px 30px; font-size: 1.1rem; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; margin: 1rem 0 3rem; }
-        
-        /* 제휴 문의 폼 스타일 */
-        .contact-section { width: 90%; max-width: 400px; padding: 2rem; background: var(--input-bg); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--input-border); margin-top: 2rem; }
-        .contact-section h2 { margin-top: 0; font-size: 1.2rem; text-align: center; }
+        .contact-section, .comment-section { width: 90%; max-width: 500px; padding: 2rem; background: var(--input-bg); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border: 1px solid var(--input-border); margin-top: 2rem; box-sizing: border-box; }
+        .contact-section h2, .comment-section h2 { margin-top: 0; font-size: 1.2rem; text-align: center; }
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; margin-bottom: .5rem; font-size: 0.9rem; }
         .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--input-border); border-radius: 5px; background: var(--bg); color: var(--txt); box-sizing: border-box; }
-        .form-group textarea { height: 100px; resize: none; }
+        .form-group textarea { height: 80px; resize: none; }
         .submit-btn { width: 100%; padding: 10px; background: var(--btn); color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
@@ -32,33 +30,37 @@
     <div id="container"></div>
     <button class="main" onclick="g()">5게임 추첨하기</button>
 
-    <!-- 제휴 문의 섹션 -->
     <div class="contact-section">
         <h2>🤝 제휴 문의</h2>
         <form action="https://formspree.io/f/mrevogon" method="POST">
-            <div class="form-group">
-                <label>이름</label>
-                <input type="text" name="name" placeholder="성함 또는 업체명" required>
-            </div>
-            <div class="form-group">
-                <label>이메일</label>
-                <input type="email" name="_replyto" placeholder="example@email.com" required>
-            </div>
-            <div class="form-group">
-                <label>문의 내용</label>
-                <textarea name="message" placeholder="문의 내용을 입력해 주세요" required></textarea>
-            </div>
+            <div class="form-group"><label>이름</label><input type="text" name="name" required></div>
+            <div class="form-group"><label>이메일</label><input type="email" name="_replyto" required></div>
+            <div class="form-group"><label>문의 내용</label><textarea name="message" required></textarea></div>
             <button type="submit" class="submit-btn">문의 보내기</button>
         </form>
+    </div>
+
+    <!-- 댓글 섹션 -->
+    <div class="comment-section">
+        <h2>💬 댓글 서비스</h2>
+        <div id="utterances-container"></div>
     </div>
 
     <script>
         const $ = d => document.getElementById(d), h = document.documentElement;
         const t = () => {
             const isD = h.getAttribute('data-theme') === 'dark';
-            h.setAttribute('data-theme', isD ? 'light' : 'dark');
+            const newTheme = isD ? 'light' : 'dark';
+            h.setAttribute('data-theme', newTheme);
             document.querySelector('.theme-toggle').textContent = isD ? '🌙 다크 모드' : '☀️ 라이트 모드';
+            
+            // Utterances 테마 업데이트
+            const frame = document.querySelector('.utterances-frame');
+            if (frame) {
+                frame.contentWindow.postMessage({ type: 'set-theme', theme: isD ? 'github-light' : 'github-dark' }, 'https://utteranc.es');
+            }
         };
+
         const g = () => {
             const c = $('container'); c.innerHTML = '';
             for (let i = 1; i <= 5; i++) {
@@ -68,14 +70,27 @@
                 const nums = new Set(); while(nums.size < 6) nums.add(Math.floor(Math.random() * 45) + 1);
                 [...nums].sort((x, y) => x - y).forEach(n => {
                     const el = document.createElement('div');
-                    el.className = `ball c${Math.ceil(n/10)}`;
-                    el.textContent = n;
+                    el.className = `ball c${Math.ceil(n/10)}`; el.textContent = n;
                     row.appendChild(el);
                 });
                 c.appendChild(row);
             }
         };
+
+        // Utterances 로드
+        const loadComments = () => {
+            const script = document.createElement('script');
+            script.src = 'https://utteranc.es/client.js';
+            script.setAttribute('repo', 'nwsrt1/nwsrt1');
+            script.setAttribute('issue-term', 'pathname');
+            script.setAttribute('theme', h.getAttribute('data-theme') === 'dark' ? 'github-dark' : 'github-light');
+            script.setAttribute('crossorigin', 'anonymous');
+            script.async = true;
+            $('utterances-container').appendChild(script);
+        };
+
         g();
+        loadComments();
     </script>
 </body>
 </html>
